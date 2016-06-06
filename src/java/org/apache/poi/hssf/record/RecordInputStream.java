@@ -163,12 +163,19 @@ public final class RecordInputStream implements LittleEndianInput {
 	 */
 	public boolean hasNextRecord() throws LeftoverDataException {
 		if (_currentDataLength != -1 && _currentDataLength != _currentDataOffset) {
-			throw new LeftoverDataException(_currentSid, remaining());
+			// Read leftover bytes instead of throwing an exception
+			readToEndOfRecord();
 		}
 		if (_currentDataLength != DATA_LEN_NEEDS_TO_BE_READ) {
 			_nextSid = readNextSid();
 		}
 		return _nextSid != INVALID_SID_VALUE;
+	}
+
+	private void readToEndOfRecord() {
+		while (_currentDataOffset < _currentDataLength) {
+			readByte();
+		}
 	}
 
 	/**
