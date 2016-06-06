@@ -36,7 +36,9 @@ public abstract class HeaderFooterBase extends StandardRecord {
 	protected HeaderFooterBase(RecordInputStream in) {
 		if (in.remaining() > 0) {
 			int field_1_footer_len = in.readShort();
-			field_2_hasMultibyte = in.readByte() != 0x00;
+			if (in.remaining() > 0) {
+				field_2_hasMultibyte = in.readByte() != 0x00;
+			}
 
 			if (field_2_hasMultibyte) {
 				field_3_text = in.readUnicodeLEString(field_1_footer_len);
